@@ -1,6 +1,6 @@
 {
-    "appSecret": "",
-    "pageAccessToken": "",
-    "validationToken": "",
-    "serverURL": ""
+    "appSecret": "53523926fc270b3162edbc253753491b",
+    "pageAccessToken": "EAAZAkpimv0T8BAKa8VYMpKwZBZBdKxfgMyTI6xlZCNMzty4F2Luk7PmpCuaXM7ZCjyzzV6J9n6bZBss82NGVRqwvLKCge6WBb30ijDc0ZAJCKrZAcVCpzuY3oEbTjn3t0b0LShU2ZA1nSlG9kEvCNX3lCFOd5dcclTgxZC9URxyWOHZAAZDZD",
+    "validationToken": "webhook_token_x",
+    "serverURL": "https://frozen-beyond-90427.herokuapp.com/"
 }
