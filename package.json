@@ -1,0 +1,23 @@
+{
+  "name": "Arena",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ineXh/Quadtree.git"
+  },
+  "author": "Anthony",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.13.4",
+    "gulp": "^3.9.1",
+    "gulp-jshint": "^2.0.1",
+    "gulp-uglify": "^1.5.4",
+    "jshint": "^2.9.2"
+  }
+}
