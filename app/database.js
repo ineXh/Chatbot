@@ -23,13 +23,20 @@ Database.prototype = {
   		});// end mongodb.MongoClient.connect
 	}, // end connect
 	disconnect: function(){
+		var database = this;
 		// Only close the connection when your app is terminating.
         this.db.close(function (err) {
           if(err) throw err;
           console.log('database disconnect');
+          database.db = null;
+          database.collection = null;
         });
-	},
-	insert: function(){
+	}, // end disconnect
+	insert: function(data){
 		if(this.db == null) return;
-	},
+		if(this.collection == null) return;
+		this.collection.insert(data, function(err, result){
+			if(err) throw err;
+		}); // end collection.insert
+	}, // end insert
 } // end Database

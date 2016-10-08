@@ -1,7 +1,8 @@
 module.exports = exports = Messenger;
 const 	config = require('config'),
 		crypto = require('crypto'),
-		request = require('request');
+		request = require('request'),
+		UserView = require('./app/DatabaseScheme/userview.js');
 
 var APP_SECRET, VALIDATION_TOKEN, PAGE_ACCESS_TOKEN, SERVER_URL;
 var database;
@@ -87,6 +88,11 @@ Messenger.prototype = {
 		var senderID = event.sender.id;
 		var recipientID = event.recipient.id;
 		var timeOfAuth = event.timestamp;
+
+		var userview = new UserView();
+		userview.userID = senderID;
+		userview.timeOfAuth = timeOfAuth;
+		database.insert(userview);
 
 		// The 'ref' field is set in the 'Send to Messenger' plugin, in the 'data-ref'
 		// The developer can set this to an arbitrary value to associate the 
