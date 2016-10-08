@@ -20,7 +20,7 @@ Database.prototype = {
   			console.log('database connect');
   			database.db = db;
   			database.collection = db.collection(databaseName);
-  		}// end mongodb.MongoClient.connect
+  		});// end mongodb.MongoClient.connect
 	}, // end connect
 	disconnect: function(){
 		// Only close the connection when your app is terminating.
