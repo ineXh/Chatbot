@@ -1,10 +1,12 @@
 module.exports = exports = Messenger;
-const config = require('config');
-const request = require('request');
+const 	config = require('config'),
+		crypto = require('crypto'),
+		request = require('request');
+
 var APP_SECRET, VALIDATION_TOKEN, PAGE_ACCESS_TOKEN, SERVER_URL;
-var crypto;
-function Messenger(app, Crypto){//, app_secret, validation_token, page_access_token, server_url){
-	crypto = Crypto;
+var database;
+function Messenger(app, Database){//, app_secret, validation_token, page_access_token, server_url){
+	database = Database;
 	/*
 	 * Be sure to setup your config values before running this code. You can 
 	 * set them using environment variables or modifying the config file in /config.
@@ -14,26 +16,24 @@ function Messenger(app, Crypto){//, app_secret, validation_token, page_access_to
 	
 	APP_SECRET = config.get('appSecret');
 	this.APP_SECRET = APP_SECRET;
-	//console.log(APP_SECRET)
-	//console.log(config.get('appSecret'))
+	
 
 	// Arbitrary value used to validate a webhook
 	
 	  
 	 VALIDATION_TOKEN = config.get('validationToken');
 	this.VALIDATION_TOKEN = VALIDATION_TOKEN;
-	console.log(VALIDATION_TOKEN)
+	
 
 	// Generate a page access token for your page from the App Dashboard
 	PAGE_ACCESS_TOKEN = config.get('pageAccessToken');
 	this.PAGE_ACCESS_TOKEN = PAGE_ACCESS_TOKEN;
-	console.log(PAGE_ACCESS_TOKEN)
+	
 
 	// URL where the app is running (include protocol). Used to point to scripts and 
 	// assets located at this address. 
 	SERVER_URL = config.get('serverURL');
 	this.SERVER_URL = SERVER_URL;
-	console.log(SERVER_URL)
 
 	if (!(APP_SECRET && VALIDATION_TOKEN && PAGE_ACCESS_TOKEN && SERVER_URL)) {
 	  console.error("Missing config values");
