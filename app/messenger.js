@@ -56,13 +56,7 @@ Messenger.prototype = {
 	*/
 	verifyRequestSignature: function(req, res, buf) {
 		var signature = req.headers["x-hub-signature"];
-		console.log('signature')
-		console.log(signature)
-		console.log('buf')
-		console.log(buf)
-		console.log('APP_SECRET')
-		console.log(APP_SECRET);
-
+		
 		if (!signature) {
 		// For testing, let's log an error. In production, you should throw an 
 		// error.
