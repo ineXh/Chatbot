@@ -1,5 +1,6 @@
 //https://www.npmjs.com/package/mongodb
 const config = require('config');
+var Promise = require('promise');
 
 module.exports = exports = Database;
 
@@ -71,17 +72,25 @@ Database.prototype = {
 	getAllUsers: function(msg){
 		var collection = this.collection;
 		var users = [];
-		// Peform a simple find and return all the documents
-	    collection.find().toArray(function(err, docs) {
-			test.equal(null, err);
-			for(var i = 0; i < docs.length; i++){
-				users.push(docs[i].userID);
-			}
-	     	console.log('getAllUsers Done')	      
-	    	console.log(users)  
-	    });
-	    console.log('getAllUsers not done');
-	    console.log(users)
-	    return users;
-	},
+
+		return new Promise(function(resolve, reject){
+			// Peform a simple find and return all the documents
+		    collection.find().toArray(function(err, docs) {
+		    	if(err){
+		    		reject(1);
+		    		throw err;	
+		    	} 
+				test.equal(null, err);
+				for(var i = 0; i < docs.length; i++){
+					users.push(docs[i].userID);
+				}				
+		     	console.log('getAllUsers Done')	      
+		    	console.log(users)
+		    	resolve(users); 
+		    }); // end collection find
+		}); // end Promise		
+	    //console.log('getAllUsers not done');
+	    //console.log(users)
+	    //return users;
+	}, // end getAllUsers
 } // end Database

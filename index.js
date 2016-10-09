@@ -22,14 +22,19 @@ require('./app/routes')(app, messenger); // pass our application into our routes
 
 database.connect();
 
+
 // Cron Jobs
 var CronJob = require('cron').CronJob;
 new CronJob('0,20,40 * * * * *', function() {
   console.log('You will see this message every 20 seconds');
   console.log(new Date());
-  var users = database.getAllUsers();
-  console.log('cron getAllUsers')
-  console.log(users);
+  var promise = database.getAllUsers().then(function(res){
+    //console.log('res')
+    //console.log(res);
+    for(var i = 0; i < res.length; i++){
+      messenger.sendTextMessage(res[i], "Hey, It is " + new Date());
+    }
+  });  
 }, null, true, 'America/Los_Angeles');
 
 // Start server
