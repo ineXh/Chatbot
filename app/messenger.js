@@ -1,6 +1,7 @@
 module.exports = exports = Messenger;
 const 	config = require('config'),
 		crypto = require('crypto'),
+		enums = require("./enums.js"),
 		request = require('request'),
 		UserView = require('./DatabaseSchema/userviews.js');
 
@@ -155,7 +156,7 @@ Messenger.prototype = {
 		console.log("Quick reply for message %s with payload %s",
 		  messageId, quickReplyPayload);
 
-		sendTextMessage(senderID, "Quick reply tapped");
+		sendTextMessage(senderID, "Quick reply tapped " + quickReplyPayload);
 		return;
 		}
 
@@ -196,15 +197,17 @@ Messenger.prototype = {
 		  case 'generic':
 		    sendGenericMessage(senderID);
 		    break;
-		  case 'generic1':
-		  	sendGenericMessage1(senderID);
+		  case 'start':
+		  	sendStartMessage(senderID);
 		    break;
-
+		  case 'cmd':
+		  	sendCmdReply(senderID);
+		  	break;
 		  case 'receipt':
 		    sendReceiptMessage(senderID);
 		    break;
 
-		  case 'quick reply':
+		  case 'quick Reply':
 		    sendQuickReply(senderID);
 		    break;        
 
@@ -276,7 +279,7 @@ Messenger.prototype = {
 
 		// When a postback is called, we'll send a message back to the sender to 
 		// let them know it was successful
-		sendTextMessage(senderID, "Postback called");
+		sendTextMessage(senderID, "Postback called " + payload);
 	}, // end receivedPostback
 	/*
 	* Message Read Event
@@ -553,7 +556,7 @@ function sendGenericMessage(recipientId) {
   callSendAPI(messageData);
 }
 
-function sendGenericMessage1(recipientId) {
+function sendStartMessage(recipientId) {
   var messageData = {
     recipient: {
       id: recipientId
@@ -564,32 +567,20 @@ function sendGenericMessage1(recipientId) {
         payload: {
           template_type: "generic",
           elements: [{
-            title: "Eggs",
-            subtitle: "Egg 1",
-            item_url: "https://www.oculus.com/en-us/rift/",               
+            title: "Egg 1",              
             image_url: SERVER_URL + "/assets/tama/egg0.gif",
             buttons: [{
-              type: "web_url",
-              url: "https://www.oculus.com/en-us/rift/",
-              title: "Open Web URL"
-            }, {
               type: "postback",
               title: "Call Postback",
-              payload: "Payload for first bubble",
+              payload: "Payload for egg0",
             }],
           }, {
-            title: "Eggs",
-            subtitle: "Egg 2",
-            item_url: "https://www.oculus.com/en-us/touch/",               
+            title: "Eggs 2",
             image_url: SERVER_URL + "/assets/tama/egg1.gif",
-            buttons: [{
-              type: "web_url",
-              url: "https://www.oculus.com/en-us/touch/",
-              title: "Open Web URL"
-            }, {
+            buttons: [ {
               type: "postback",
               title: "Call Postback",
-              payload: "Payload for second bubble",
+              payload: "Payload for egg1",
             }]
           }] // end elements
         } // end payload
@@ -598,7 +589,7 @@ function sendGenericMessage1(recipientId) {
   };
 
   callSendAPI(messageData);
-} // end sendGenericMessage1
+} // end sendStartMessage
 
 /*
  * Send a receipt message using the Send API.
@@ -666,6 +657,36 @@ function sendReceiptMessage(recipientId) {
   callSendAPI(messageData);
 }
 
+function sendCmdReply(recipientId){
+	var messageData = {
+    recipient: {
+      id: recipientId
+    },
+    message: {
+      text: "What's your favorite movie genre?",
+      metadata: "DEVELOPER_DEFINED_METADATA",
+      quick_replies: [
+        {
+          "content_type":"text",
+          "title":"Food",
+          "payload": enums.actionFood
+        },
+        {
+          "content_type":"text",
+          "title":"Play",
+          "payload": enums.actionPlay
+        },
+        {
+          "content_type":"text",
+          "title":"Sleep",
+          "payload": enums.actionSleep
+        }
+      ]
+    }
+  };
+
+  callSendAPI(messageData);
+}
 /*
  * Send a message with Quick Reply buttons.
  *
