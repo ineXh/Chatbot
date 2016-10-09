@@ -192,6 +192,9 @@ Messenger.prototype = {
 		  case 'generic':
 		    sendGenericMessage(senderID);
 		    break;
+		  case 'generic1':
+		  	sendGenericMessage1(senderID);
+		    break;
 
 		  case 'receipt':
 		    sendReceiptMessage(senderID);
@@ -529,6 +532,53 @@ function sendGenericMessage(recipientId) {
 
   callSendAPI(messageData);
 }
+
+function sendGenericMessage1(recipientId) {
+  var messageData = {
+    recipient: {
+      id: recipientId
+    },
+    message: {
+      attachment: {
+        type: "template",
+        payload: {
+          template_type: "generic",
+          elements: [{
+            title: "Eggs",
+            subtitle: "Egg 1",
+            item_url: "https://www.oculus.com/en-us/rift/",               
+            image_url: SERVER_URL + "/assets/tama/egg0.gif",
+            buttons: [{
+              type: "web_url",
+              url: "https://www.oculus.com/en-us/rift/",
+              title: "Open Web URL"
+            }, {
+              type: "postback",
+              title: "Call Postback",
+              payload: "Payload for first bubble",
+            }],
+          }, {
+            title: "Eggs",
+            subtitle: "Egg 2",
+            item_url: "https://www.oculus.com/en-us/touch/",               
+            image_url: SERVER_URL + "/assets/tama/egg1.gif",
+            buttons: [{
+              type: "web_url",
+              url: "https://www.oculus.com/en-us/touch/",
+              title: "Open Web URL"
+            }, {
+              type: "postback",
+              title: "Call Postback",
+              payload: "Payload for second bubble",
+            }]
+          }] // end elements
+        } // end payload
+      } // end attachment
+    } // end message
+  };
+
+  callSendAPI(messageData);
+} // end sendGenericMessage1
 
 /*
  * Send a receipt message using the Send API.
