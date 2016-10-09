@@ -22,6 +22,16 @@ require('./app/routes')(app, messenger); // pass our application into our routes
 
 database.connect();
 
+// Cron Jobs
+var CronJob = require('cron').CronJob;
+new CronJob('0,20,40 * * * * *', function() {
+  console.log('You will see this message every 20 seconds');
+  console.log(new Date());
+  var users = database.getAllUsers();
+  console.log('cron getAllUsers')
+  console.log(users);
+}, null, true, 'America/Los_Angeles');
+
 // Start server
 // Webhooks must be available via SSL with a certificate signed by a valid 
 // certificate authority.

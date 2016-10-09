@@ -129,7 +129,7 @@ Messenger.prototype = {
 		var timeOfMessage = event.timestamp;
 		var message = event.message;
 
-		database.update({userID: senderID}, {userID: senderID, timeOfLast: timeOfMessage});
+		database.update({userID: senderID}, {userID: senderID, timeOfLast: timeOfMessage, subscribed: true});
 
 		console.log("Received message for user %d and page %d at %d with message:", 
 		senderID, recipientID, timeOfMessage);
@@ -307,6 +307,11 @@ Messenger.prototype = {
 		console.log("Received account link event with for user %d with status %s " +
 		"and auth code %s ", senderID, status, authCode);
 	}, // end receivedAccountLink
+	sendTextMessage: function(recipientId, messageText){
+		sendTextMessage(recipientId, messageText);	
+	},
+
+	
 } // end Messenger
 
 

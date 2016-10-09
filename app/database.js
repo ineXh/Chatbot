@@ -68,4 +68,20 @@ Database.prototype = {
 		    });*/
 		  });
 	}, // end update
+	getAllUsers: function(msg){
+		var collection = this.collection;
+		var users = [];
+		// Peform a simple find and return all the documents
+	    collection.find().toArray(function(err, docs) {
+			test.equal(null, err);
+			for(var i = 0; i < docs.length; i++){
+				users.push(docs[i].userID);
+			}
+	     	console.log('getAllUsers Done')	      
+	    	console.log(users)  
+	    });
+	    console.log('getAllUsers not done');
+	    console.log(users)
+	    return users;
+	},
 } // end Database
