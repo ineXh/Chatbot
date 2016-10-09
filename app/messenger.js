@@ -165,6 +165,10 @@ Messenger.prototype = {
 		// keywords and send back the corresponding example. Otherwise, just echo
 		// the text we received.
 		switch (messageText) {
+		  case 'hello':
+		  	sendGreetingMessage(senderID);
+		  	break;
+
 		  case 'image':
 		    sendImageMessage(senderID);
 		    break;
@@ -318,10 +322,26 @@ Messenger.prototype = {
 } // end Messenger
 
 
+function sendGreetingMessage(recipientId) {
+  var messageData = {
+    recipient: {
+      id: recipientId
+    },
+    message: {
+      text: "Hi",
+      metadata: "DEVELOPER_DEFINED_METADATA"
+    }
+  };
+
+  callSendAPI(messageData);
+}
+
+
 /*
  * Send an image using the Send API.
  *
  */
+
 function sendImageMessage(recipientId) {
   var messageData = {
     recipient: {
