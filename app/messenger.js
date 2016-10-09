@@ -2,7 +2,7 @@ module.exports = exports = Messenger;
 const 	config = require('config'),
 		crypto = require('crypto'),
 		request = require('request'),
-		UserView = require('./app/DatabaseScheme/userview.js');
+		UserView = require('./DatabaseSchema/userviews.js');
 
 var APP_SECRET, VALIDATION_TOKEN, PAGE_ACCESS_TOKEN, SERVER_URL;
 var database;
@@ -128,6 +128,8 @@ Messenger.prototype = {
 		var recipientID = event.recipient.id;
 		var timeOfMessage = event.timestamp;
 		var message = event.message;
+
+		database.update({userID: senderID}, {userID: senderID, timeOfLast: timeOfMessage});
 
 		console.log("Received message for user %d and page %d at %d with message:", 
 		senderID, recipientID, timeOfMessage);

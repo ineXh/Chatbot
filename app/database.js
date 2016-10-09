@@ -1,8 +1,10 @@
-const mongodb = require('mongodb');
+//https://www.npmjs.com/package/mongodb
 const config = require('config');
 
 module.exports = exports = Database;
 
+var MongoClient = require('mongodb').MongoClient,
+  test = require('assert');
 var uri;
 var db;
 
@@ -15,12 +17,12 @@ function Database(){
 Database.prototype = {
 	connect: function(){
 		var database = this;
-		mongodb.MongoClient.connect(uri, function(err, db) {
+		MongoClient.connect(uri, function(err, db) {
   			if(err) throw err;
   			console.log('database connect');
   			database.db = db;
   			database.collection = db.collection(databaseName);
-  		});// end mongodb.MongoClient.connect
+  		});// end MongoClient.connect
 	}, // end connect
 	disconnect: function(){
 		var database = this;
@@ -37,6 +39,33 @@ Database.prototype = {
 		if(this.collection == null) return;
 		this.collection.insert(data, function(err, result){
 			if(err) throw err;
+			console.log('collection insert')
+			console.log(result);
 		}); // end collection.insert
 	}, // end insert
+	update: function(key, obj){
+		// a simple document update using upsert (the document will be inserted if it does not exist)
+		// key: { song: 'One Sweet Day' }
+		// obj: { artist: 'Mariah Carey ft. Boyz II Men' }
+		/*this.collection.update(
+      		key, 
+      		{ $set: obj },
+      		function (err, result) {        
+        		if(err) throw err;
+        		console.log('database update')
+        		console.log(key)
+        		console.log(obj)
+        		console.log(result);
+    	});*/
+		var collection = this.collection;
+		collection.updateOne(key, obj, {upsert:true, w: 1}, function(err, result) {
+		    test.equal(null, err);
+		    test.equal(1, result.result.n);
+
+		    /*// Fetch the document that we modified and check if it got inserted correctly
+		    collection.findOne(key, function(err, item) {
+		      test.equal(null, err);		      
+		    });*/
+		  });
+	}, // end update
 } // end Database
