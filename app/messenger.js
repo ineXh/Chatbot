@@ -156,7 +156,27 @@ Messenger.prototype = {
 		console.log("Quick reply for message %s with payload %s",
 		  messageId, quickReplyPayload);
 
-		sendTextMessage(senderID, "Quick reply tapped " + quickReplyPayload);
+		switch(parseInt(quickReplyPayload)) {
+			case 0:
+				sendTextMessage(senderID, "You feed your pet.");			
+				console.log("Action Food")
+				break;
+			case 1:
+				sendTextMessage(senderID, "You play with your pet.");			
+				console.log("Action Play")
+				break;
+			case 2:
+				sendTextMessage(senderID, "Your pet goes to sleep.");			
+				console.log("Action Sleep")
+				break;
+			default:
+				console.log("Action Default " + quickReplyPayload)
+				console.log("===" + quickReplyPayload === 0 + " ==" + quickReplyPayload == 0)
+				break;
+
+		}
+
+		//sendTextMessage(senderID, "Quick reply tapped " + quickReplyPayload);
 		return;
 		}
 
@@ -280,7 +300,7 @@ function sendStatsMessage(recipientId) {
       id: recipientId
     },
     message: {
-      text: "Hi. Stats.",
+      text: "Pet stats.",
       metadata: "DEVELOPER_DEFINED_METADATA"
     }
   };
@@ -349,7 +369,7 @@ function sendCmdReply(recipientId){
       id: recipientId
     },
     message: {
-      text: "What's your favorite movie genre?",
+      text: "What would you like to do?",
       metadata: "DEVELOPER_DEFINED_METADATA",
       quick_replies: [
         {
