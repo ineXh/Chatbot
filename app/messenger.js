@@ -376,7 +376,8 @@ function sendGifMessage(recipientId) {
       attachment: {
         type: "image",
         payload: {
-          url: SERVER_URL + "/assets/instagram_logo.gif"
+          //url: SERVER_URL + "/assets/instagram_logo.gif"
+          url: SERVER_URL + "/assets/tama/egg.gif"
         }
       }
     }
@@ -568,7 +569,7 @@ function sendStartMessage(recipientId) {
           template_type: "generic",
           elements: [{
             title: "Egg 1",              
-            image_url: SERVER_URL + "/assets/tama/egg0.gif",
+            image_url: SERVER_URL + "/assets/tama/egg.gif",
             buttons: [{
               type: "postback",
               title: "Call Postback",
