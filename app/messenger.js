@@ -156,22 +156,21 @@ Messenger.prototype = {
 		console.log("Quick reply for message %s with payload %s",
 		  messageId, quickReplyPayload);
 
-		switch(parseInt(quickReplyPayload)) {
+		switch(quickReplyPayload) {
 			case 0:
 				sendTextMessage(senderID, "You feed your pet.");			
-				console.log("Action Food")
+				console.log("Action Food");
 				break;
 			case 1:
 				sendTextMessage(senderID, "You play with your pet.");			
-				console.log("Action Play")
+				console.log("Action Play");
 				break;
 			case 2:
 				sendTextMessage(senderID, "Your pet goes to sleep.");			
-				console.log("Action Sleep")
+				console.log("Action Sleep");
 				break;
 			default:
-				console.log("Action Default " + quickReplyPayload)
-				console.log("===" + quickReplyPayload === 0 + " ==" + quickReplyPayload == 0)
+				console.log("Action Default " + quickReplyPayload);
 				break;
 
 		}

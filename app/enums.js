@@ -6,6 +6,6 @@ function define(name, value) {
 }
 
 // CVI Status
-define("actionFood", 0);
-define("actionPlay", 1);
-define("actionSleep", 2);
+define("actionFood", "0");
+define("actionPlay", "1");
+define("actionSleep", "2");
