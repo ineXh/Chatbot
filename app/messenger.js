@@ -130,7 +130,7 @@ Messenger.prototype = {
 		var timeOfMessage = event.timestamp;
 		var message = event.message;
 
-		database.update({userID: senderID}, {userID: senderID, timeOfLast: timeOfMessage, subscribed: true});
+		database.update({userID: senderID}, {$set: {timeOfLast: timeOfMessage, subscribed: true}});
 
 		console.log("Received message for user %d and page %d at %d with message:", 
 		senderID, recipientID, timeOfMessage);
@@ -336,7 +336,7 @@ function sendTextMessage(recipientId, messageText) {
 }
 
 function sendStartMessage(recipientId) {
-	database.update({userID: recipientId}, {userID: recipientId, hunger: 10, happiness: 10, energy: 10});
+	database.update({userID: recipientId}, {$set: {hunger: 10, happiness: 10, energy: 10}});
 	console.log("setting stats of user %d", recipientId);
   var messageData = {
     recipient: {
