@@ -157,15 +157,15 @@ Messenger.prototype = {
 		  messageId, quickReplyPayload);
 
 		switch(quickReplyPayload) {
-			case 0:
+			case enums.actionFood:
 				sendTextMessage(senderID, "You feed your pet.");			
 				console.log("Action Food");
 				break;
-			case 1:
+			case enums.actionPlay:
 				sendTextMessage(senderID, "You play with your pet.");			
 				console.log("Action Play");
 				break;
-			case 2:
+			case enums.actionSleep:
 				sendTextMessage(senderID, "Your pet goes to sleep.");			
 				console.log("Action Sleep");
 				break;
