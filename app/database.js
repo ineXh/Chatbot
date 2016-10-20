@@ -69,6 +69,20 @@ Database.prototype = {
 		    });*/
 		  });
 	}, // end update
+	getUser: function(id) {
+		var collection = this.collection;
+		return new Promise(function(resolve, reject) {
+			collection.findOne({userID:id}, function(err, user){
+				if(err) {
+					reject(1);
+					throw err;
+				}
+				console.log('getUser done');
+				console.log(user);
+				resolve(user);
+			}); // end collection findOne
+		}); // end promise
+	}, // end getUser
 	getAllUsers: function(msg){
 		var collection = this.collection;
 		var users = [];
