@@ -107,4 +107,34 @@ Database.prototype = {
 	    //console.log(users)
 	    //return users;
 	}, // end getAllUsers
+	decrementStats: function() {
+		var collection = this.collection;
+
+		collection.bulkWrite([
+				{	
+					updateMany:
+					{
+						"filter": {"hunger": { $gt: 0 }},
+						"update": {$inc : {"hunger": -1}},
+						"upsert": false
+					}
+				},
+				{	
+					updateMany:
+					{
+						"filter": {"happiness": { $gt: 0 }},
+						"update": {$inc : {"happiness": -1}},
+						"upsert": false
+					}
+				},
+				{	updateMany:
+					{
+						"filter": {"energy": { $gt: 0 }},
+						"update": {$inc : {"energy": -1}},
+						"upsert": false
+					}
+				}
+		]);
+
+	}
 } // end Database

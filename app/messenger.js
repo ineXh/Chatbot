@@ -158,15 +158,18 @@ Messenger.prototype = {
 
 		switch(quickReplyPayload) {
 			case enums.actionFood:
-				sendTextMessage(senderID, "You feed your pet.");			
+				sendTextMessage(senderID, "You feed your pet.");
+				database.update({userID: senderID}, {$set: {hunger: 10}});
 				console.log("Action Food");
 				break;
 			case enums.actionPlay:
 				sendTextMessage(senderID, "You play with your pet.");			
+				database.update({userID: senderID}, {$set: {happiness: 10}});
 				console.log("Action Play");
 				break;
 			case enums.actionSleep:
-				sendTextMessage(senderID, "Your pet goes to sleep.");			
+				sendTextMessage(senderID, "Your pet goes to sleep.");		
+				database.update({userID: senderID}, {$set: {energy: 10}});	
 				console.log("Action Sleep");
 				break;
 			default:
