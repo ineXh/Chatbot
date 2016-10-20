@@ -294,18 +294,25 @@ Messenger.prototype = {
 
 
 function sendStatsMessage(recipientId) {
+	var promise = database.getUser(recipientId).then(function(res){
+		console.log(res);
 	
-	var messageData = {
-	    recipient: {
-	      id: recipientId
-	    },
-	    message: {
-	      text: "Pet stats.",
-	      metadata: "DEVELOPER_DEFINED_METADATA"
-	    }
-  };
+		var messageData = {
+		    recipient: {
+		      id: recipientId
+		    },
+		    message: {
+		      text: "Pet stats. " +
+		      "\nHunger: " + res.hunger +
+		      "\nEnergy:  " + res.energy +
+		      "\nHappiness:  " + res.happiness
+		      ,
+		      metadata: "DEVELOPER_DEFINED_METADATA"
+		    }
+		};
 
-  callSendAPI(messageData);
+		callSendAPI(messageData);
+	});
 }
 
 
@@ -330,6 +337,7 @@ function sendTextMessage(recipientId, messageText) {
 
 function sendStartMessage(recipientId) {
 	database.update({userID: recipientId}, {userID: recipientId, hunger: 10, happiness: 10, energy: 10});
+	console.log("setting stats of user %d", recipientId);
   var messageData = {
     recipient: {
       id: recipientId
