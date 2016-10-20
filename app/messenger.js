@@ -294,14 +294,15 @@ Messenger.prototype = {
 
 
 function sendStatsMessage(recipientId) {
-  var messageData = {
-    recipient: {
-      id: recipientId
-    },
-    message: {
-      text: "Pet stats.",
-      metadata: "DEVELOPER_DEFINED_METADATA"
-    }
+	
+	var messageData = {
+	    recipient: {
+	      id: recipientId
+	    },
+	    message: {
+	      text: "Pet stats.",
+	      metadata: "DEVELOPER_DEFINED_METADATA"
+	    }
   };
 
   callSendAPI(messageData);
@@ -328,6 +329,7 @@ function sendTextMessage(recipientId, messageText) {
 }
 
 function sendStartMessage(recipientId) {
+	database.update({userID: recipientId}, {userID: recipientId, hunger: 10, happiness: 10, energy: 10});
   var messageData = {
     recipient: {
       id: recipientId
