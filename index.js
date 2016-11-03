@@ -38,6 +38,7 @@ new CronJob('*/20 * * * * *', function() {
   });  
   */
   database.decrementStats();
+  messenger.gameUpdate();
 }, null, true, 'America/Los_Angeles');
 
 // Start server

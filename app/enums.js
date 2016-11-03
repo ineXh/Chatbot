@@ -5,7 +5,28 @@ function define(name, value) {
     });
 }
 
-// CVI Status
+// Action Enums
 define("actionFood", "0");
 define("actionPlay", "1");
 define("actionSleep", "2");
+
+define("actionStartYes", "ACTIONSTARTYES");
+define("actionStartNo", "ACTIONSTARTNO");
+
+// Command Enums
+define("cmdStart", "START");
+
+define("cmd", "CMD");
+define("cmdStats", "STATS");
+define("cmdPlay", "PLAY");
+define("cmdFeed", "FEED");
+define("cmdFood", "FOOD");
+define("cmdEat", "EAT");
+define("cmdSleep", "SLEEP");
+
+// Post Emi,s
+define("postEgg0", "Picked Egg 0")
+define("postEgg1", "Picked Egg 1")
+
+// Emoji
+define("emojiBurger", "🍔")

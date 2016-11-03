@@ -3,10 +3,14 @@ const 	config = require('config'),
 		crypto = require('crypto'),
 		enums = require("./enums.js"),
 		request = require('request'),
+		urls = require("./urls.js"),
 		UserView = require('./DatabaseSchema/userviews.js');
 
 var APP_SECRET, VALIDATION_TOKEN, PAGE_ACCESS_TOKEN, SERVER_URL;
 var database;
+var gAgeTime = 2; // global age Counter
+var VERBOSE = false;
+
 function Messenger(app, Database){//, app_secret, validation_token, page_access_token, server_url){
 	database = Database;
 	/*
@@ -132,7 +136,7 @@ Messenger.prototype = {
 
 		database.update({userID: senderID}, {$set: {timeOfLast: timeOfMessage, subscribed: true}});
 
-		console.log("Received message for user %d and page %d at %d with message:", 
+		if(VERBOSE) console.log("Received message for user %d and page %d at %d with message:", 
 		senderID, recipientID, timeOfMessage);
 		console.log(JSON.stringify(message));
 
@@ -153,29 +157,27 @@ Messenger.prototype = {
 		return;
 		} else if (quickReply) {
 		var quickReplyPayload = quickReply.payload;
-		console.log("Quick reply for message %s with payload %s",
+		if(VERBOSE) console.log("Quick reply for message %s with payload %s",
 		  messageId, quickReplyPayload);
 
 		switch(quickReplyPayload) {
 			case enums.actionFood:
-				sendTextMessage(senderID, "You feed your pet.");
-				database.update({userID: senderID}, {$set: {hunger: 10}});
-				console.log("Action Food");
+				this.feed(senderID);				
 				break;
 			case enums.actionPlay:
-				sendTextMessage(senderID, "You play with your pet.");			
-				database.update({userID: senderID}, {$set: {happiness: 10}});
-				console.log("Action Play");
+				this.play(senderID);
 				break;
 			case enums.actionSleep:
-				sendTextMessage(senderID, "Your pet goes to sleep.");		
-				database.update({userID: senderID}, {$set: {energy: 10}});	
-				console.log("Action Sleep");
+				this.sleep(senderID);
+				break;
+			case enums.actionStartYes:
+				sendStartEggs(senderID);
+				break;
+			case enums.actionStartNo:
 				break;
 			default:
 				console.log("Action Default " + quickReplyPayload);
 				break;
-
 		}
 
 		//sendTextMessage(senderID, "Quick reply tapped " + quickReplyPayload);
@@ -187,17 +189,31 @@ Messenger.prototype = {
 		// If we receive a text message, check to see if it matches any special
 		// keywords and send back the corresponding example. Otherwise, just echo
 		// the text we received.
-		switch (messageText) {
-		  case 'stats':
+		var tempText = messageText.toUpperCase();
+		//console.log('tempText')
+		//console.log(tempText)
+		switch (tempText) {
+		  case enums.cmdStats:
 		  	sendStatsMessage(senderID);
 		  	break;
-		  case 'start':
+		  case enums.cmdStart:
 		  	sendStartMessage(senderID);
 		    break;
-		  case 'cmd':
+		  case enums.cmd:
 		  	sendCmdReply(senderID);
 		  	break;
-
+		  case enums.cmdFeed:
+		  case enums.cmdFood:
+		  case enums.cmdEat:
+		  case enums.emojiBurger:
+		  	this.feed(senderID);
+		  	break;
+		  case enums.cmdPlay:
+		  	this.play(senderID);
+		  	break;
+		  case enums.cmdSleep:
+		  	this.sleep(senderID);
+		  	break;
 		  default:
 		    sendTextMessage(senderID, messageText);
 		}
@@ -222,12 +238,12 @@ Messenger.prototype = {
 
 		if (messageIDs) {
 		messageIDs.forEach(function(messageID) {
-		  console.log("Received delivery confirmation for message ID: %s", 
+		  if(VERBOSE) console.log("Received delivery confirmation for message ID: %s", 
 		    messageID);
 		});
 		}
 
-		console.log("All message before %d were delivered.", watermark);
+		if(VERBOSE) console.log("All message before %d were delivered.", watermark);
 	}, // end receivedDeliveryConfirmation
 	/*
 	* Postback Event
@@ -245,12 +261,30 @@ Messenger.prototype = {
 		// button for Structured Messages. 
 		var payload = event.postback.payload;
 
-		console.log("Received postback for user %d and page %d with payload '%s' " + 
+		if(VERBOSE) console.log("Received postback for user %d and page %d with payload '%s' " + 
 		"at %d", senderID, recipientID, payload, timeOfPostback);
 
 		// When a postback is called, we'll send a message back to the sender to 
 		// let them know it was successful
-		sendTextMessage(senderID, "Postback called " + payload);
+		//sendTextMessage(senderID, "Postback called " + payload);
+
+		switch(payload){
+			case enums.postEgg0:
+			database.update({userID: senderID}, 
+					{$set: {age: 0, ageLevel: 0, ageTime: gAgeTime, inPlay: true, 
+						hunger: 10, happiness: 10, energy: 10}});				
+				sendTextMessage(senderID, "Let's Cow! Here's an Egg. Take Good Care of it!");
+				sendGifMessage(senderID, urls.egg0);
+			break;
+			case enums.postEgg1:
+				database.update({userID: senderID}, 
+					{$set: {age: 0, ageLevel: 0, ageTime: gAgeTime, inPlay: true, 
+						hunger: 10, happiness: 10, energy: 10}});
+				database.update({userID: senderID}, {$set: {ageTime: gAgeTime}});
+				sendTextMessage(senderID, "Let's Cow! Here's an Egg. Take Good Care of it!");
+				sendGifMessage(senderID, urls.egg1);
+			break;
+		}
 	}, // end receivedPostback
 	/*
 	* Message Read Event
@@ -267,7 +301,7 @@ Messenger.prototype = {
 		var watermark = event.read.watermark;
 		var sequenceNumber = event.read.seq;
 
-		console.log("Received message read event for watermark %d and sequence " +
+		if(VERBOSE) console.log("Received message read event for watermark %d and sequence " +
 		"number %d", watermark, sequenceNumber);
 	}, // end receivedMessageRead
 	/*
@@ -291,21 +325,118 @@ Messenger.prototype = {
 	sendTextMessage: function(recipientId, messageText){
 		sendTextMessage(recipientId, messageText);	
 	},
-
-	
+	gameUpdate: function(){
+		//console.log('gameUpdate')		
+		var age = this.age.bind(this);
+		var hatch = this.hatch.bind(this);
+		var evolve = this.evolve.bind(this);
+		database.getAllUsers({}).then(function(res){
+			//console.log('get All Users blank');
+			for(var i = 0; i < res.length; i++){
+				//console.log('res[%d] ' + res[i], i);
+				//console.log(res[i].ageTime);
+				if(res[i].ageTime <= 0){
+					if(res[i].age == 0){
+						hatch(res[i]);
+					}
+					evolve(res[i]);
+					age(res[i]);
+				}
+			}
+		}); // end getAllUsers	
+	}, // end gameUpdate
+	age: function(user){
+		//console.log('AGE')
+		database.update({userID: user.userID}, {$inc: {age: 1}, $set: {ageTime: gAgeTime}}); // age		
+	},
+	evolve: function(user){		
+		var ageLevel;
+		switch(user.age){
+			case 0: ageLevel = 1; 
+				database.update({userID: user.userID}, {$set: {ageLevel: ageLevel}}); // ageLevel
+				return;
+			case 1: ageLevel = 2; break;
+			case 2: ageLevel = 3; break;
+			default: return;
+		}
+		console.log('evolve');		
+		user.ageLevel = ageLevel;
+		database.update({userID: user.userID}, {$set: {ageLevel: ageLevel}}); // ageLevel
+		sendTextMessage(user.userID, "Your Pet has evolved.");
+		this.idle(user);
+	},
+	feed: function(senderID){
+		sendTextMessage(senderID, "You feed your pet.");
+		database.update({userID: senderID}, {$set: {hunger: 10}});
+		console.log("Action Food");
+		database.getUser(senderID).then(function(res){			
+			switch(res.ageLevel){
+				case 0: break;
+				case 1: sendGifMessage(senderID, urls.eat1); break;
+				case 2: sendGifMessage(senderID, urls.eat2); break;
+				case 3: sendGifMessage(senderID, urls.eat3); break;
+			}			
+		});
+	}, // end feed
+	play: function(senderID){
+		sendTextMessage(senderID, "You play with your pet.");			
+		database.update({userID: senderID}, {$set: {happiness: 10}});
+		console.log("Action Play");
+		database.getUser(senderID).then(function(res){			
+			switch(res.ageLevel){
+				case 0: break;
+				case 1: sendGifMessage(senderID, urls.idle1); break;
+				case 2: sendGifMessage(senderID, urls.idle2); break;
+				case 3: sendGifMessage(senderID, urls.idle3); break;
+			}			
+		});
+	}, // end play
+	sleep: function(senderID){
+		sendTextMessage(senderID, "Your pet goes to sleep.");
+		database.update({userID: senderID}, {$set: {energy: 10}});	
+		console.log("Action Sleep");
+		database.getUser(senderID).then(function(res){			
+			switch(res.ageLevel){
+				case 0: break;
+				case 1: sendGifMessage(senderID, urls.sleep1); break;
+				case 2: sendGifMessage(senderID, urls.sleep2); break;
+				case 3: sendGifMessage(senderID, urls.sleep3); break;
+			}			
+		});
+	}, // end sleep
+	idle: function(user){
+		setTimeout(function(){
+			switch(user.ageLevel){
+				case 0: break;
+				case 1: sendGifMessage(user.userID, urls.idle1); break;
+				case 2: sendGifMessage(user.userID, urls.idle2); break;
+				case 3: sendGifMessage(user.userID, urls.idle3); break;
+			}
+		}, 1000);
+	},
+	hatch: function(user){
+		sendGifMessage(user.userID, urls.hatch);
+		sendTextMessage(user.userID, "Your pet has hatched.");
+		user.ageLevel = 1;
+		this.idle(user);
+	}, // end hatch
 } // end Messenger
-
 
 function sendStatsMessage(recipientId) {
 	var promise = database.getUser(recipientId).then(function(res){
 		console.log(res);
-	
+		
+		if(res.age == undefined){
+			sendTextMessage(recipientId, "You don't have a pet. Begin by typing 'start'.");
+			return;
+		}
 		var messageData = {
 		    recipient: {
 		      id: recipientId
 		    },
 		    message: {
 		      text: "Pet stats. " +
+		      "\nAge: " + res.age +
 		      "\nHunger: " + res.hunger +
 		      "\nEnergy:  " + res.energy +
 		      "\nHappiness:  " + res.happiness
@@ -339,9 +470,40 @@ function sendTextMessage(recipientId, messageText) {
 }
 
 function sendStartMessage(recipientId) {
-	database.update({userID: recipientId}, {$set: {hunger: 10, happiness: 10, energy: 10}});
-	console.log("setting stats of user %d", recipientId);
-  var messageData = {
+	database.getUser(recipientId).then(function(res){
+		if(res.inPlay){
+			var messageData = {
+		    recipient: {
+		      id: recipientId
+		    },
+		    message: {
+		      text: "You already have a Pet. Do you want to start again?",
+		      metadata: "DEVELOPER_DEFINED_METADATA",
+		      quick_replies: [
+		        {
+		          "content_type":"text",
+		          "title":"Yes",
+		          "payload": enums.actionStartYes
+		        },
+		        {
+		          "content_type":"text",
+		          "title":"No",
+		          "payload": enums.actionStartNo
+		        }
+		      ]
+		    }
+		  };
+		  callSendAPI(messageData);
+		}else{
+			sendStartEggs(recipientId);
+		}		
+	}); // end getUser  	  
+} // end sendStartMessage
+
+function sendStartEggs(recipientId){	
+	if(VERBOSE) console.log("setting stats of user %d", recipientId);
+
+	var messageData = {
     recipient: {
       id: recipientId
     },
@@ -351,29 +513,28 @@ function sendStartMessage(recipientId) {
         payload: {
           template_type: "generic",
           elements: [{
-            title: "Egg 1",              
-            image_url: SERVER_URL + "/assets/tama/egg.gif",
+            title: "Egg 0",              
+            image_url: SERVER_URL + urls.egg0,
             buttons: [{
               type: "postback",
-              title: "Call Postback",
-              payload: "Payload for egg0",
+              title: "Pick Egg 0",
+              payload: enums.postEgg0,
             }],
           }, {
-            title: "Eggs 2",
-            image_url: SERVER_URL + "/assets/tama/egg1.gif",
+            title: "Egg 1",
+            image_url: SERVER_URL + urls.egg1,
             buttons: [ {
               type: "postback",
-              title: "Call Postback",
-              payload: "Payload for egg1",
+              title: "Pick Egg 1",
+              payload: enums.postEgg1,
             }]
           }] // end elements
         } // end payload
       } // end attachment
     } // end message
   };
-
   callSendAPI(messageData);
-} // end sendStartMessage
+} // end sendStartEggs
 
 function sendCmdReply(recipientId){
 	var messageData = {
@@ -404,7 +565,7 @@ function sendCmdReply(recipientId){
   };
 
   callSendAPI(messageData);
-}
+} // end sendCmdReply
 
 
 /*
@@ -425,14 +586,31 @@ function callSendAPI(messageData) {
       var messageId = body.message_id;
 
       if (messageId) {
-        console.log("Successfully sent message with id %s to recipient %s", 
-          messageId, recipientId);
+        //console.log("Successfully sent message with id %s to recipient %s", 
+          //messageId, recipientId);
       } else {
-      console.log("Successfully called Send API for recipient %s", 
-        recipientId);
+      	//console.log("Successfully called Send API for recipient %s", 
+		// recipientId);
       }
     } else {
       console.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error);
     }
   });  
-}
+} // end callSendAPI
+
+function sendGifMessage(recipientId, url) {
+  var messageData = {
+    recipient: {
+      id: recipientId
+    },
+    message: {
+      attachment: {
+        type: "image",
+        payload: {
+          url: SERVER_URL + url
+        }
+      }
+    }
+  };
+  callSendAPI(messageData);
+} // end sendGifMessage

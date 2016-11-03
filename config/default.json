@@ -1,6 +1,6 @@
 {
     "appSecret": "53523926fc270b3162edbc253753491b",
-    "pageAccessToken": "EAAZAkpimv0T8BAKa8VYMpKwZBZBdKxfgMyTI6xlZCNMzty4F2Luk7PmpCuaXM7ZCjyzzV6J9n6bZBss82NGVRqwvLKCge6WBb30ijDc0ZAJCKrZAcVCpzuY3oEbTjn3t0b0LShU2ZA1nSlG9kEvCNX3lCFOd5dcclTgxZC9URxyWOHZAAZDZD",
+    "pageAccessToken": "EAAZAkpimv0T8BAJIjQuY0zqiB0BahniQyqxs95eMVlNybclwF7eO7kZArrA8XBmJoGNSZCJpWrCoKn9kK7vRgHkMXVOwQZAAtToDkMHYmJVNSDg2h2c4nBCeaE9CY2EZBCEaTjRqKUuZCq358b6VhvLhpw8rQGSzbYuUKsCZCodKwZDZD",
     "validationToken": "webhook_token_x",
     "serverURL": "https://frozen-beyond-90427.herokuapp.com/",
     "dbURI": "mongodb://chatbotuser:botxy@ds053196.mlab.com:53196/chatbotdb"

@@ -77,36 +77,36 @@ Database.prototype = {
 					reject(1);
 					throw err;
 				}
-				console.log('getUser done');
-				console.log(user);
+				//console.log('getUser done');
+				//console.log(user);
 				resolve(user);
 			}); // end collection findOne
 		}); // end promise
 	}, // end getUser
-	getAllUsers: function(msg){
+	getAllUsers: function(key){
 		var collection = this.collection;
 		var users = [];
 
 		return new Promise(function(resolve, reject){
 			// Peform a simple find and return all the documents
-		    collection.find().toArray(function(err, docs) {
+		    collection.find(key).toArray(function(err, docs) {
 		    	if(err){
 		    		reject(1);
 		    		throw err;	
 		    	} 
 				test.equal(null, err);
 				for(var i = 0; i < docs.length; i++){
-					users.push(docs[i].userID);
+					users.push(docs[i]);
 				}				
-		     	console.log('getAllUsers Done')	      
-		    	console.log(users)
-		    	resolve(users); 
+		     	//console.log('getAllUsers Done')	      
+		    	//console.log(users)
+		    	resolve(users);
 		    }); // end collection find
 		}); // end Promise		
 	    //console.log('getAllUsers not done');
 	    //console.log(users)
 	    //return users;
-	}, // end getAllUsers
+	}, // end getAllUsers		
 	decrementStats: function() {
 		var collection = this.collection;
 
@@ -114,7 +114,7 @@ Database.prototype = {
 				{	
 					updateMany:
 					{
-						"filter": {"hunger": { $gt: 0 }},
+						"filter": {"hunger": { $gt: 0 }, "age": { $gt: 0 }},
 						"update": {$inc : {"hunger": -1}},
 						"upsert": false
 					}
@@ -122,15 +122,22 @@ Database.prototype = {
 				{	
 					updateMany:
 					{
-						"filter": {"happiness": { $gt: 0 }},
+						"filter": {"happiness": { $gt: 0 }, "age": { $gt: 0 }},
 						"update": {$inc : {"happiness": -1}},
 						"upsert": false
 					}
 				},
 				{	updateMany:
 					{
-						"filter": {"energy": { $gt: 0 }},
+						"filter": {"energy": { $gt: 0 }, "age": { $gt: 0 }},
 						"update": {$inc : {"energy": -1}},
+						"upsert": false
+					}
+				},
+				{	updateMany:
+					{
+						"filter": {"ageTime": { $gt: 0 }},
+						"update": {$inc : {"ageTime": -1}},
 						"upsert": false
 					}
 				}
