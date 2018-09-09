@@ -193,6 +193,9 @@ Messenger.prototype = {
 		//console.log('tempText')
 		//console.log(tempText)
 		switch (tempText) {
+		  case enums.cmdHelp:
+		  	sendHelpMessage(senderID);
+		  	break;
 		  case enums.cmdStats:
 		  	sendStatsMessage(senderID);
 		  	break;
@@ -421,6 +424,10 @@ Messenger.prototype = {
 		this.idle(user);
 	}, // end hatch
 } // end Messenger
+
+function sendHelpMessage(recipientId){
+	sendTextMessage(recipientId, "Mooo. Type: 'stats' to check your pet's status, Type 'cmd' to see the list of available commands for your pet.");
+}// end sendHelpMessage
 
 function sendStatsMessage(recipientId) {
 	var promise = database.getUser(recipientId).then(function(res){

@@ -24,6 +24,8 @@ define("cmdFood", "FOOD");
 define("cmdEat", "EAT");
 define("cmdSleep", "SLEEP");
 
+define("cmdHelp", "HELP");
+
 // Post Emi,s
 define("postEgg0", "Picked Egg 0")
 define("postEgg1", "Picked Egg 1")
